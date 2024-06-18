@@ -8,14 +8,14 @@ server.use(express.json({ extended: true }));
 // ------------------------ functions ---------------------------------
 
 const readFile = () => {
-  const content = fs.readFileSync("./db/data.json", "utf-8");
+  const content = fs.readFileSync("./db/dadosaqui.json", "utf-8");
   return JSON.parse(content);
 };
 
-const writeFile = (content) => {
-  const updateFile = JSON.stringify(content);
-  fs.writeFileSync("./db/data.json", updateFile, "utf-8");
-};
+// const writeFile = (content) => {
+//   const updateFile = JSON.stringify(content);
+//   fs.writeFileSync("./db/data.json", updateFile, "utf-8");
+// };
 
 // ----------------------- routes ----------------------------------
 
@@ -24,26 +24,35 @@ router.get("/", (req, res) => {
   res.send(content);
 });
 
+// -------------------------------------------------------------------------------------------
+
 router.post("/", (req, res) => {
-  const data = ({ email, phone, company, instagram, userName, userNickname } =
-    req.body);
-  const currentContent = readFile(data);
+  // const id = Math.random().toString(32).substring(2, 9);
+  const { email, phone, company, instagram, userName, userNickname } = req.body;
 
-  const id = Math.random().toString(32).substring(2, 9);
+  const currentContent = readFile();
 
-  currentContent.push(
-    id,
+  currentContent.push({
     email,
     phone,
     company,
     instagram,
     userName,
-    userNickname
-  );
+    userNickname,
+  });
 
-  writeFile(currentContent);
-  res.send(currentContent);
+  fs.writeFileSync("./db/dadosaqui.json", JSON.stringify(currentContent), "utf-8");
+  res.send({
+    email,
+    phone,
+    company,
+    instagram,
+    userName,
+    userNickname,
+  });
 });
+
+// -------------------------------------------------------------------------------------------
 
 // ----------------------- server ----------------------------------
 
