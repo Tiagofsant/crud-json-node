@@ -1,69 +1,69 @@
 const express = require("express");
+const { readFile, writeFile } = require("./dbUtils");
+
 const server = express();
 const router = express.Router();
-const fs = require("fs");
 
 server.use(express.json({ extended: true }));
 
-// ------------------------ functions --------------------------------------------------------
+// -------------------------------------------------------
 
-const PATH_DB = "./db/dadosaqui.json";
-const enconder = "utf-8";
-
-const readFile = () => {
-  const content = fs.readFileSync(PATH_DB, enconder);
-  return JSON.parse(content);
-};
-
-const writeFile = (content) => {
-  const updateFile = JSON.stringify(content);
-  fs.writeFileSync(PATH_DB, updateFile, enconder);
-};
-
-// ----------------------- routes ------------------------------------------------------------
-
-router.get("/", (req, res) => {
-  const content = readFile();
-  res.send(content);
+router.get("/", async (req, res) => {
+  try {
+    const content = await readFile();
+    res.send(content);
+  } catch (err) {
+    console.error("Erro ao ler arquivo:", err);
+    res.status(500).send("Erro interno ao ler dados.");
+  }
 });
 
-// -------------------------------------------------------------------------------------------
+router.post("/", async (req, res) => {
+  try {
+    const id = Math.random().toString(32).substring(2, 9);
+    const { email, phone, company, instagram, userName, userNickname } =
+      req.body;
 
-router.post("/", (req, res) => {
-  const id = Math.random().toString(32).substring(2, 9);
-  const { email, phone, company, instagram, userName, userNickname } = req.body;
+    if (!email || !phone || !userName) {
+      return res.status(400).json({
+        message: "E-mail, telefone e nome de usuário são obrigatórios",
+      });
+    }
 
-  const currentContent = readFile();
+    const currentContent = await readFile();
 
-  currentContent.push({
-    id,
-    email,
-    phone,
-    company,
-    instagram,
-    userName,
-    userNickname,
-  });
+    currentContent.push({
+      id,
+      email,
+      phone,
+      company,
+      instagram,
+      userName,
+      userNickname,
+    });
 
-  writeFile(currentContent);
+    await writeFile(currentContent);
 
-  res.send({
-    id,
-    email,
-    phone,
-    company,
-    instagram,
-    userName,
-    userNickname,
-  });
+    res.status(201).json({
+      id,
+      email,
+      phone,
+      company,
+      instagram,
+      userName,
+      userNickname,
+    });
+  } catch (err) {
+    console.error("Erro ao salvar dados:", err);
+    res.status(500).send("Erro interno ao salvar dados.");
+  }
 });
 
-// -------------------------------------------------------------------------------------------
-
-// ----------------------- server ------------------------------------------------------------
+// -------------------------------------------------------
 
 server.use(router);
 
-server.listen(3000, () => {
-  console.log("servidor rodando");
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`);
 });

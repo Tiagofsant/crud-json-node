@@ -1,0 +1,29 @@
+[
+  {
+    "id": "pk5otj8",
+    "email": "teste123@fullcodedev.com",
+    "phone": "69999951496",
+    "company": "FullCode Software",
+    "instagram": "@fullcodedev",
+    "userName": "Tiago",
+    "userNickname": "F. Santos"
+  },
+  {
+    "id": "n85ed0t",
+    "email": "teste123@fullcodedev.com",
+    "phone": "69999951496",
+    "company": "FullCode Software",
+    "instagram": "@fullcodedev",
+    "userName": "Tiago",
+    "userNickname": "F. Santos"
+  },
+  {
+    "id": "g5br1f6",
+    "email": "teste123@fullcodedev.com",
+    "phone": "69999951496",
+    "company": "",
+    "instagram": "",
+    "userName": "Tiago",
+    "userNickname": ""
+  }
+]
