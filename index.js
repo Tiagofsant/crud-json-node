@@ -5,19 +5,22 @@ const fs = require("fs");
 
 server.use(express.json({ extended: true }));
 
-// ------------------------ functions ---------------------------------
+// ------------------------ functions --------------------------------------------------------
+
+const PATH_DB = "./db/dadosaqui.json";
+const enconder = "utf-8";
 
 const readFile = () => {
-  const content = fs.readFileSync("./db/dadosaqui.json", "utf-8");
+  const content = fs.readFileSync(PATH_DB, enconder);
   return JSON.parse(content);
 };
 
-// const writeFile = (content) => {
-//   const updateFile = JSON.stringify(content);
-//   fs.writeFileSync("./db/data.json", updateFile, "utf-8");
-// };
+const writeFile = (content) => {
+  const updateFile = JSON.stringify(content);
+  fs.writeFileSync(PATH_DB, updateFile, enconder);
+};
 
-// ----------------------- routes ----------------------------------
+// ----------------------- routes ------------------------------------------------------------
 
 router.get("/", (req, res) => {
   const content = readFile();
@@ -27,12 +30,13 @@ router.get("/", (req, res) => {
 // -------------------------------------------------------------------------------------------
 
 router.post("/", (req, res) => {
-  // const id = Math.random().toString(32).substring(2, 9);
+  const id = Math.random().toString(32).substring(2, 9);
   const { email, phone, company, instagram, userName, userNickname } = req.body;
 
   const currentContent = readFile();
 
   currentContent.push({
+    id,
     email,
     phone,
     company,
@@ -41,8 +45,10 @@ router.post("/", (req, res) => {
     userNickname,
   });
 
-  fs.writeFileSync("./db/dadosaqui.json", JSON.stringify(currentContent), "utf-8");
+  writeFile(currentContent);
+
   res.send({
+    id,
     email,
     phone,
     company,
@@ -54,7 +60,7 @@ router.post("/", (req, res) => {
 
 // -------------------------------------------------------------------------------------------
 
-// ----------------------- server ----------------------------------
+// ----------------------- server ------------------------------------------------------------
 
 server.use(router);
 
